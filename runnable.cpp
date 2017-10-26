@@ -2,7 +2,7 @@
 using namespace std;
 
 struct Queue {
-	int queue[10];
+	int queue[10] = { 0 };
 	int front = -1;
 	int rear = -1;
 
@@ -11,7 +11,8 @@ struct Queue {
 			front = rear = 0;
 		else if (isFull()) { cout << "INFO :: Queue is FULL!" << endl; return; }
 		else
-			rear++;
+			// rear++
+			rear = (rear + 1) % (sizeof(queue) / sizeof(int));
 		queue[rear] = info;
 	}
 	int Dequeue() {
@@ -25,15 +26,22 @@ struct Queue {
 		}
 		else
 			temp = queue[front];
-		front++;
+		/*front++;*/
+		front = (front + 1) % (sizeof(queue) / sizeof(int));
 		return temp;
 	}
 	void PrintQueue() {
-		if (!isEmpty())
+		/*if (!isEmpty())
 			for (int i = front; i <= rear; i++)
-				cout << queue[i] << endl;
-
-	}
+				cout << queue[i] << endl;*/
+		if (!isEmpty()) {
+			int count = (rear + (sizeof(queue) / sizeof(int)) - front) % (sizeof(queue) / sizeof(int));
+			for (int i = 0; i <= count; i++) {
+				int index = (front + i) % (sizeof(queue) / sizeof(int));
+				cout << "index [" << index << "] = " << queue[index] << endl;
+			}
+		}
+	};
 	void PrintAll() {
 		for (int i = 0; i <= 10; i++)
 			cout << queue[i] << endl;
@@ -45,7 +53,8 @@ struct Queue {
 		return front == -1;
 	}
 	bool isFull() {
-		return rear == (sizeof(queue) / sizeof(int)) - 1;
+		/*return rear == (sizeof(queue) / sizeof(int)) - 1;*/
+		return (rear + 1) % (sizeof(queue) / sizeof(int)) == front;
 	}
 };
 
@@ -54,9 +63,6 @@ int main() {
 	queue->Enqueue(4);
 	queue->Enqueue(3);
 	queue->Enqueue(5);
-	queue->Dequeue();
-	queue->Dequeue();
-	queue->Dequeue();
 	cout << "IsEmpty " << boolalpha << queue->isEmpty() << endl;
 	cout << "IsFull " << boolalpha << queue->isFull() << endl;
 	queue->PrintIndexStatus();
